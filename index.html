@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>RekenTest – Tafels Oefenen</title>
   <style>
     /* ── Reset & Base ── */
@@ -27,136 +27,142 @@
       font-family: 'Segoe UI', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       padding: 16px;
+      padding-bottom: 32px;
       background-image: radial-gradient(ellipse at 20% 50%, rgba(233,69,96,.08) 0%, transparent 60%),
                         radial-gradient(ellipse at 80% 20%, rgba(15,52,96,.3) 0%, transparent 60%);
     }
 
     /* ── Screens ── */
-    .screen { display: none; width: 100%; max-width: 560px; }
+    .screen { display: none; width: 100%; max-width: 520px; }
     .screen.active { display: block; }
 
     /* ── Card ── */
     .card {
       background: var(--card);
       border-radius: var(--radius);
-      padding: 32px;
+      padding: 28px 28px;
       box-shadow: var(--shadow);
       border: 1px solid rgba(255,255,255,.06);
     }
 
     /* ── Typography ── */
-    h1 { font-size: 2rem; font-weight: 800; letter-spacing: -.5px; }
-    h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 20px; }
-    .subtitle { color: var(--muted); font-size: .95rem; margin-top: 6px; margin-bottom: 28px; }
+    h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -.5px; }
+    .subtitle { color: var(--muted); font-size: .9rem; margin-top: 6px; margin-bottom: 24px; }
 
     /* ── Buttons ── */
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
-      gap: 8px; padding: 14px 28px; border-radius: 12px; font-size: 1rem;
-      font-weight: 700; border: none; cursor: pointer; transition: all .2s; text-decoration: none;
+      gap: 8px; padding: 14px 20px; border-radius: 12px; font-size: 1rem;
+      font-weight: 700; border: none; cursor: pointer; transition: all .15s;
+      text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
     }
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), #c62a47);
-      color: #fff; width: 100%; font-size: 1.1rem; letter-spacing: .3px;
+      color: #fff; width: 100%; font-size: 1.05rem; letter-spacing: .3px;
       box-shadow: 0 4px 20px rgba(233,69,96,.4);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(233,69,96,.5); }
-    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:active { transform: scale(.97); }
     .btn-secondary {
       background: var(--card2); color: var(--text); border: 1px solid rgba(255,255,255,.1);
     }
-    .btn-secondary:hover { background: var(--accent2); }
-    .btn-ghost { background: transparent; color: var(--muted); font-size: .9rem; padding: 8px 16px; }
-    .btn-ghost:hover { color: var(--text); }
+    .btn-secondary:active { background: var(--accent2); }
+    .btn-ghost {
+      background: transparent; color: var(--muted); font-size: .9rem;
+      padding: 10px 14px; touch-action: manipulation;
+    }
+    .btn-ghost:active { color: var(--text); }
 
     /* ── Section label ── */
     .section-label {
-      font-size: .75rem; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+      font-size: .72rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
     }
 
     /* ── Tafel checkboxes ── */
     .tafel-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 22px;
     }
     .tafel-check { display: none; }
     .tafel-label {
       display: flex; align-items: center; justify-content: center;
-      padding: 12px 8px; background: var(--card2);
+      padding: 13px 6px; background: var(--card2);
       border: 2px solid rgba(255,255,255,.08); border-radius: 10px;
-      cursor: pointer; font-weight: 700; font-size: 1rem;
-      transition: all .2s; user-select: none;
+      cursor: pointer; font-weight: 700; font-size: .95rem;
+      transition: border-color .15s, background .15s;
+      user-select: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
     }
     .tafel-check:checked + .tafel-label {
-      border-color: var(--accent); background: rgba(233,69,96,.15); color: #fff;
+      border-color: var(--accent); background: rgba(233,69,96,.18); color: #fff;
     }
-    .tafel-label:hover { border-color: rgba(233,69,96,.5); }
 
     /* ── Mode & Level selector ── */
-    .selector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+    .selector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 22px; }
     .sel-radio { display: none; }
     .sel-label {
       display: flex; flex-direction: column; align-items: center; gap: 4px;
-      padding: 14px 10px; background: var(--card2);
+      padding: 12px 8px; background: var(--card2);
       border: 2px solid rgba(255,255,255,.08); border-radius: 10px;
-      cursor: pointer; font-weight: 600; font-size: .9rem;
-      transition: all .2s; text-align: center;
+      cursor: pointer; font-weight: 600; font-size: .88rem;
+      transition: border-color .15s, background .15s; text-align: center;
+      touch-action: manipulation; -webkit-tap-highlight-color: transparent;
     }
-    .sel-label .icon { font-size: 1.6rem; }
+    .sel-label .icon { font-size: 1.5rem; }
     .sel-radio:checked + .sel-label {
-      border-color: var(--accent); background: rgba(233,69,96,.15);
+      border-color: var(--accent); background: rgba(233,69,96,.18);
     }
-    .sel-label:hover { border-color: rgba(233,69,96,.4); }
 
-    .level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px; }
+    .level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; }
 
     /* ── Game screen ── */
     #game-screen .card { text-align: center; }
 
     .game-header {
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .score-badge {
       background: var(--card2); border-radius: 8px;
-      padding: 8px 14px; font-weight: 700; font-size: 1rem;
+      padding: 7px 12px; font-weight: 700; font-size: .95rem;
     }
     .score-badge span { color: var(--accent); }
 
     /* Timer bar */
-    .timer-wrap { margin-bottom: 32px; }
-    .timer-label { font-size: .85rem; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .timer-wrap { margin-bottom: 20px; }
+    .timer-label {
+      font-size: .8rem; color: var(--muted); margin-bottom: 6px;
+      display: flex; justify-content: space-between;
+    }
     .timer-bar-bg {
       height: 10px; background: rgba(255,255,255,.1); border-radius: 99px; overflow: hidden;
     }
     .timer-bar {
       height: 100%; border-radius: 99px;
       background: linear-gradient(90deg, var(--green), var(--yellow));
-      transition: width .1s linear, background-color .3s;
+      transition: width .1s linear;
     }
     .timer-bar.danger { background: var(--red); }
 
     /* Race timer */
     .race-timer {
-      font-size: 3.5rem; font-weight: 900; color: var(--accent);
-      margin-bottom: 24px; letter-spacing: -2px;
+      font-size: 3.2rem; font-weight: 900; color: var(--accent);
+      margin-bottom: 16px; letter-spacing: -2px;
       font-variant-numeric: tabular-nums;
     }
 
     /* Question */
-    .question-area { margin-bottom: 32px; }
+    .question-area { margin-bottom: 20px; }
     .question-text {
-      font-size: 3.2rem; font-weight: 900; letter-spacing: -1px;
-      margin-bottom: 24px; min-height: 70px;
-      font-variant-numeric: tabular-nums;
+      font-size: 2.8rem; font-weight: 900; letter-spacing: -1px;
+      margin-bottom: 20px; min-height: 60px;
+      font-variant-numeric: tabular-nums; line-height: 1.1;
     }
-    .question-text.flash-green { animation: flashGreen .4s; }
-    .question-text.flash-red   { animation: flashRed .4s; }
+    .question-text.flash-green { animation: flashGreen .35s; }
+    .question-text.flash-red   { animation: flashRed .35s; }
 
     @keyframes flashGreen {
       0%,100% { color: var(--text); }
@@ -167,106 +173,157 @@
       50% { color: var(--red); text-shadow: 0 0 30px rgba(239,68,68,.6); }
     }
 
-    .answer-row { display: flex; gap: 12px; }
+    .answer-row { display: flex; gap: 10px; }
     #answer-input {
-      flex: 1; padding: 16px 20px; border-radius: 12px;
+      flex: 1; padding: 16px 12px; border-radius: 12px;
       background: var(--card2); border: 2px solid rgba(255,255,255,.1);
-      color: var(--text); font-size: 1.4rem; font-weight: 700; text-align: center;
-      outline: none; transition: border-color .2s;
+      color: var(--text); font-size: 1.5rem; font-weight: 700; text-align: center;
+      outline: none; transition: border-color .15s;
       font-variant-numeric: tabular-nums;
+      /* Prevent zoom on iOS */
+      font-size: max(16px, 1.5rem);
+      -webkit-appearance: none; appearance: none;
     }
     #answer-input:focus { border-color: var(--accent); }
     #answer-input.correct { border-color: var(--green); background: rgba(34,197,94,.1); }
     #answer-input.wrong   { border-color: var(--red);   background: rgba(239,68,68,.1); }
 
     .submit-btn {
-      padding: 16px 24px; border-radius: 12px;
+      padding: 16px 20px; border-radius: 12px;
       background: var(--accent); border: none; color: #fff;
-      font-size: 1.2rem; cursor: pointer; transition: all .2s;
+      font-size: 1.3rem; cursor: pointer; transition: transform .1s;
+      touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
     }
-    .submit-btn:hover { background: #c62a47; transform: scale(1.05); }
+    .submit-btn:active { transform: scale(.93); }
 
-    /* Feedback overlay */
+    /* Feedback */
     .feedback-msg {
-      height: 28px; font-size: 1rem; font-weight: 600;
-      color: var(--muted); margin-top: 12px; transition: color .2s;
+      height: 26px; font-size: .95rem; font-weight: 600;
+      color: var(--muted); margin-top: 10px;
     }
     .feedback-msg.correct { color: var(--green); }
     .feedback-msg.wrong   { color: var(--red); }
 
     /* ── Results screen ── */
-    .result-header { text-align: center; margin-bottom: 28px; }
+    .result-header { text-align: center; margin-bottom: 22px; }
     .result-score {
-      font-size: 3.5rem; font-weight: 900; color: var(--accent);
+      font-size: 3rem; font-weight: 900; color: var(--accent);
       letter-spacing: -2px;
     }
-    .result-sub { color: var(--muted); margin-top: 4px; }
-    .result-stars { font-size: 2rem; margin: 8px 0; }
+    .result-sub { color: var(--muted); margin-top: 4px; font-size: .9rem; }
+    .result-stars { font-size: 1.8rem; margin: 6px 0; }
 
     .stats-row {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;
     }
     .stat-box {
-      background: var(--card2); border-radius: 12px; padding: 14px;
+      background: var(--card2); border-radius: 12px; padding: 12px 8px;
       text-align: center;
     }
-    .stat-box .val { font-size: 1.5rem; font-weight: 800; }
-    .stat-box .lbl { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+    .stat-box .val { font-size: 1.4rem; font-weight: 800; }
+    .stat-box .lbl { font-size: .72rem; color: var(--muted); margin-top: 2px; }
     .stat-box.green .val { color: var(--green); }
     .stat-box.red   .val { color: var(--red); }
     .stat-box.yellow .val { color: var(--yellow); }
 
-    /* Highscore */
     .highscore-row {
       background: rgba(233,69,96,.08); border: 1px solid rgba(233,69,96,.25);
-      border-radius: 10px; padding: 12px 16px;
+      border-radius: 10px; padding: 10px 14px;
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 20px; font-size: .9rem;
+      margin-bottom: 16px; font-size: .88rem;
     }
     .highscore-row .hs-title { color: var(--muted); }
-    .highscore-row .hs-val { font-weight: 800; color: var(--yellow); font-size: 1rem; }
+    .highscore-row .hs-val { font-weight: 800; color: var(--yellow); font-size: .95rem; }
 
-    /* Detail table */
     .detail-toggle {
       background: transparent; border: none; color: var(--muted);
-      font-size: .85rem; cursor: pointer; margin-bottom: 12px;
+      font-size: .85rem; cursor: pointer; margin-bottom: 10px;
       display: flex; align-items: center; gap: 4px; width: 100%;
+      touch-action: manipulation;
     }
-    .detail-toggle:hover { color: var(--text); }
-    .detail-table { width: 100%; border-collapse: collapse; font-size: .9rem; margin-bottom: 24px; }
+    .detail-table {
+      width: 100%; border-collapse: collapse; font-size: .85rem; margin-bottom: 20px;
+    }
     .detail-table th {
-      text-align: left; padding: 8px 10px;
-      color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: 1px;
+      text-align: left; padding: 7px 8px;
+      color: var(--muted); font-size: .7rem; text-transform: uppercase; letter-spacing: 1px;
       border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    .detail-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,.05); }
+    .detail-table td { padding: 7px 8px; border-bottom: 1px solid rgba(255,255,255,.05); }
     .detail-table tr.row-wrong td { color: var(--red); }
     .detail-table tr.row-correct td { color: var(--green); }
     .badge {
-      display: inline-block; padding: 2px 8px; border-radius: 99px;
-      font-size: .75rem; font-weight: 700;
+      display: inline-block; padding: 2px 7px; border-radius: 99px;
+      font-size: .72rem; font-weight: 700;
     }
     .badge-green { background: rgba(34,197,94,.2); color: var(--green); }
     .badge-red   { background: rgba(239,68,68,.2); color: var(--red); }
 
-    /* Action buttons */
     .action-row { display: flex; gap: 10px; }
     .action-row .btn { flex: 1; }
 
-    /* Hidden */
     .hidden { display: none !important; }
 
-    /* Scrollable results */
-    #results-screen .card {
-      max-height: 90vh; overflow-y: auto;
+    #results-screen .card { max-height: 92dvh; overflow-y: auto; }
+
+    /* ═══════════════════════════════
+       RESPONSIVE — tablet (≤600px)
+    ═══════════════════════════════ */
+    @media (max-width: 600px) {
+      body { padding: 10px; padding-bottom: 24px; }
+      .card { padding: 20px 16px; border-radius: 14px; }
+      h1 { font-size: 1.65rem; }
+      .question-text { font-size: 2.4rem; min-height: 52px; }
+      .race-timer { font-size: 2.8rem; }
+      .result-score { font-size: 2.6rem; }
     }
 
-    /* Responsive */
-    @media (max-width: 400px) {
-      .card { padding: 20px; }
-      .question-text { font-size: 2.4rem; }
-      h1 { font-size: 1.6rem; }
+    /* ═══════════════════════════════
+       RESPONSIVE — phone (≤420px)
+    ═══════════════════════════════ */
+    @media (max-width: 420px) {
+      body { padding: 8px; }
+      .card { padding: 16px 14px; border-radius: 12px; }
+      h1 { font-size: 1.45rem; }
+      .subtitle { font-size: .83rem; margin-bottom: 18px; }
+
+      .tafel-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
+      .tafel-label { padding: 10px 4px; font-size: .88rem; border-radius: 8px; }
+
+      .selector-grid { gap: 6px; margin-bottom: 16px; }
+      .sel-label { padding: 10px 6px; font-size: .82rem; }
+      .sel-label .icon { font-size: 1.3rem; }
+
+      .level-grid { gap: 6px; margin-bottom: 18px; }
+
+      .question-text { font-size: 2rem; min-height: 46px; margin-bottom: 16px; }
+      .race-timer { font-size: 2.4rem; margin-bottom: 12px; }
+      .game-header { margin-bottom: 12px; }
+      .score-badge { padding: 6px 10px; font-size: .85rem; }
+
+      .timer-wrap { margin-bottom: 14px; }
+      .question-area { margin-bottom: 14px; }
+
+      #answer-input { padding: 14px 10px; }
+      .submit-btn { padding: 14px 16px; font-size: 1.2rem; }
+
+      .stats-row { gap: 6px; }
+      .stat-box .val { font-size: 1.25rem; }
+
+      .detail-table { font-size: .78rem; }
+      .detail-table th, .detail-table td { padding: 6px 5px; }
+
+      .result-score { font-size: 2.2rem; }
+      .action-row { flex-direction: column; gap: 8px; }
+    }
+
+    /* ═══════════════════════════════
+       RESPONSIVE — tiny (≤340px)
+    ═══════════════════════════════ */
+    @media (max-width: 340px) {
       .tafel-grid { grid-template-columns: repeat(2, 1fr); }
+      .question-text { font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -280,7 +337,6 @@
     <h1>🧮 RekenTest</h1>
     <p class="subtitle">Oefen je tafels en versla je eigen record!</p>
 
-    <!-- Tafel keuze -->
     <div class="section-label">Welke tafels wil je oefenen?</div>
     <div class="tafel-grid">
       <input type="checkbox" class="tafel-check" id="t5"   value="5"   checked>
@@ -302,25 +358,23 @@
       <label class="tafel-label" for="t15">× 1,5</label>
     </div>
 
-    <!-- Spelmode -->
     <div class="section-label">Spelmode</div>
-    <div class="selector-grid" style="margin-bottom:28px">
+    <div class="selector-grid">
       <input type="radio" name="mode" class="sel-radio" id="mode-tijddruk" value="tijddruk" checked>
       <label class="sel-label" for="mode-tijddruk">
         <span class="icon">⏱️</span>
         <span>Tijddruk</span>
-        <small style="color:var(--muted);font-size:.75rem">Per vraag</small>
+        <small style="color:var(--muted);font-size:.72rem">Per vraag</small>
       </label>
 
       <input type="radio" name="mode" class="sel-radio" id="mode-race" value="race">
       <label class="sel-label" for="mode-race">
         <span class="icon">🏁</span>
         <span>Race</span>
-        <small style="color:var(--muted);font-size:.75rem">Zo veel mogelijk</small>
+        <small style="color:var(--muted);font-size:.72rem">Zo veel mogelijk</small>
       </label>
     </div>
 
-    <!-- Level -->
     <div class="section-label">Level</div>
     <div class="level-grid">
       <input type="radio" name="level" class="sel-radio" id="lvl-easy" value="easy">
@@ -343,7 +397,7 @@
     </div>
 
     <button class="btn btn-primary" onclick="startGame()">🚀 Start!</button>
-    <div id="start-error" style="color:var(--red);text-align:center;margin-top:12px;font-size:.9rem;display:none">
+    <div id="start-error" style="color:var(--red);text-align:center;margin-top:10px;font-size:.88rem;display:none">
       Kies minstens één tafel!
     </div>
   </div>
@@ -355,19 +409,16 @@
 <div id="game-screen" class="screen">
   <div class="card">
 
-    <!-- Header -->
     <div class="game-header">
       <button class="btn btn-ghost" onclick="confirmQuit()">← Stop</button>
       <div class="score-badge">Score: <span id="live-score">0</span></div>
       <div class="score-badge" id="streak-badge" style="display:none">🔥 <span id="streak-count">0</span></div>
     </div>
 
-    <!-- Race timer (only in race mode) -->
     <div id="race-timer-wrap" class="hidden">
       <div class="race-timer" id="race-seconds">60</div>
     </div>
 
-    <!-- Tijddruk timer bar (only in tijddruk mode) -->
     <div id="bar-timer-wrap" class="timer-wrap">
       <div class="timer-label">
         <span>Tijd per vraag</span>
@@ -378,19 +429,31 @@
       </div>
     </div>
 
-    <!-- Vraag -->
     <div class="question-area">
       <div class="question-text" id="question-text">? × ? = ?</div>
       <div class="answer-row">
-        <input type="number" id="answer-input" placeholder="?" autocomplete="off"
-               inputmode="numeric" onkeydown="handleKey(event)" />
+        <!--
+          type="text" + inputmode="numeric" = numeric keyboard on mobile
+          WITHOUT the browser adding spinner arrows or refusing commas.
+          autocomplete/autocorrect off to prevent weird suggestions.
+        -->
+        <input
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9,\.]*"
+          id="answer-input"
+          placeholder="?"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
         <button class="submit-btn" onclick="submitAnswer()">✓</button>
       </div>
       <div class="feedback-msg" id="feedback-msg"></div>
     </div>
 
-    <!-- Progress (race mode) -->
-    <div id="race-progress" class="hidden" style="color:var(--muted);font-size:.9rem;text-align:center">
+    <div id="race-progress" class="hidden" style="color:var(--muted);font-size:.88rem;text-align:center">
       Vraag <span id="q-count">0</span>
     </div>
 
@@ -437,7 +500,7 @@
           <tr>
             <th>Som</th>
             <th>Jouw antwoord</th>
-            <th>Goed antwoord</th>
+            <th>Correct</th>
             <th></th>
           </tr>
         </thead>
@@ -464,11 +527,14 @@ const LEVEL_CONFIG = {
 
 const MULTIPLIERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
+// Detect touch/mobile — don't auto-focus input (opens keyboard mid-game)
+const isMobile = window.matchMedia('(pointer: coarse)').matches;
+
 /* ══════════════════════════════════════
    STATE
 ══════════════════════════════════════ */
 let state = {};
-let highscores = {}; // key: "mode-level" -> best score
+let highscores = {};
 
 /* ══════════════════════════════════════
    UTILS
@@ -476,6 +542,8 @@ let highscores = {}; // key: "mode-level" -> best score
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  // Scroll to top when switching screens
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function getSelectedTafels() {
@@ -505,10 +573,27 @@ function shuffle(arr) {
 }
 
 function formatNum(n) {
-  // Show 1.5 with comma for Dutch locale, integers without decimal
   if (Number.isInteger(n)) return String(n);
   return String(n).replace('.', ',');
 }
+
+/* ══════════════════════════════════════
+   INPUT HANDLING (keyboard + mobile)
+══════════════════════════════════════ */
+const inp = document.getElementById('answer-input');
+
+// Only accept digits, comma and period
+inp.addEventListener('input', () => {
+  inp.value = inp.value.replace(/[^0-9,\.]/g, '');
+});
+
+// Enter key — preventDefault stops browser from doing weird things
+inp.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    submitAnswer();
+  }
+});
 
 /* ══════════════════════════════════════
    START GAME
@@ -537,7 +622,6 @@ function startGame() {
     questionStartTime: null,
     timerInterval: null,
     raceTimeLeft: cfg.raceTime,
-    questionTimeLeft: cfg.perQuestion,
     answered: false,
     active: true,
   };
@@ -549,17 +633,12 @@ function startGame() {
 
 function setupGameUI() {
   const { mode, cfg } = state;
-  const barWrap   = document.getElementById('bar-timer-wrap');
-  const raceWrap  = document.getElementById('race-timer-wrap');
-  const raceProg  = document.getElementById('race-progress');
-  const streak    = document.getElementById('streak-badge');
-
-  barWrap.classList.toggle('hidden', mode === 'race');
-  raceWrap.classList.toggle('hidden', mode === 'tijddruk');
-  raceProg.classList.toggle('hidden', mode === 'tijddruk');
-  streak.style.display = 'none';
-
+  document.getElementById('bar-timer-wrap').classList.toggle('hidden', mode === 'race');
+  document.getElementById('race-timer-wrap').classList.toggle('hidden', mode === 'tijddruk');
+  document.getElementById('race-progress').classList.toggle('hidden', mode === 'tijddruk');
+  document.getElementById('streak-badge').style.display = 'none';
   document.getElementById('live-score').textContent = '0';
+
   if (mode === 'race') {
     document.getElementById('race-seconds').textContent = cfg.raceTime;
     startRaceTimer();
@@ -577,7 +656,6 @@ function startRaceTimer() {
     if (!state.active) return;
     state.raceTimeLeft--;
     document.getElementById('race-seconds').textContent = state.raceTimeLeft;
-
     if (state.raceTimeLeft <= 0) {
       clearInterval(state.timerInterval);
       endGame();
@@ -590,7 +668,6 @@ function startRaceTimer() {
 ══════════════════════════════════════ */
 function startQuestionTimer() {
   clearInterval(state.timerInterval);
-  state.questionTimeLeft = state.cfg.perQuestion;
   state.questionStartTime = Date.now();
 
   const bar     = document.getElementById('timer-bar');
@@ -609,7 +686,6 @@ function startQuestionTimer() {
 
     bar.style.width = pct + '%';
     barSecs.textContent = Math.ceil(left);
-
     if (pct < 30) bar.classList.add('danger');
     else          bar.classList.remove('danger');
 
@@ -641,9 +717,7 @@ function currentQ() {
 function nextQuestion() {
   if (!state.active) return;
 
-  // Recycle pool if needed (infinite in race mode)
   if (state.mode === 'tijddruk' && state.poolIndex >= state.pool.length) {
-    // Reshuffle and continue
     state.pool = shuffle(state.pool);
     state.poolIndex = 0;
   }
@@ -651,18 +725,18 @@ function nextQuestion() {
   state.answered = false;
   const q = currentQ();
 
-  // Display
-  const tafelStr = formatNum(q.tafel);
-  document.getElementById('question-text').textContent = `${tafelStr} × ${q.mult} = ?`;
-  document.getElementById('question-text').className = 'question-text';
+  const qt = document.getElementById('question-text');
+  qt.textContent = `${formatNum(q.tafel)} × ${q.mult} = ?`;
+  qt.className = 'question-text';
 
-  const inp = document.getElementById('answer-input');
   inp.value = '';
   inp.className = '';
-  inp.focus();
 
   document.getElementById('feedback-msg').textContent = '';
   document.getElementById('feedback-msg').className = 'feedback-msg';
+
+  // Only auto-focus on desktop — on mobile it pops up keyboard unexpectedly
+  if (!isMobile) inp.focus();
 
   if (state.mode === 'race') {
     document.getElementById('q-count').textContent = state.poolIndex + 1;
@@ -671,19 +745,16 @@ function nextQuestion() {
   }
 }
 
-function handleKey(e) {
-  if (e.key === 'Enter') submitAnswer();
-}
-
 function submitAnswer() {
   if (state.answered || !state.active) return;
 
-  const inp = document.getElementById('answer-input');
   const raw = inp.value.trim().replace(',', '.');
   if (raw === '') return;
 
-  const given  = parseFloat(raw);
-  const q      = currentQ();
+  const given   = parseFloat(raw);
+  if (isNaN(given)) return;
+
+  const q       = currentQ();
   const correct = Math.abs(given - q.answer) < 0.001;
 
   state.answered = true;
@@ -697,7 +768,7 @@ function submitAnswer() {
     let pts = 10;
     if (state.mode === 'tijddruk') {
       const elapsed = (Date.now() - state.questionStartTime) / 1000;
-      const left = Math.max(0, state.cfg.perQuestion - elapsed);
+      const left    = Math.max(0, state.cfg.perQuestion - elapsed);
       pts = 10 + Math.round(left * state.cfg.pointsPerSecond);
     } else {
       pts = 10 + state.streak * 2;
@@ -711,16 +782,14 @@ function submitAnswer() {
 
   document.getElementById('live-score').textContent = state.score;
   updateStreakBadge();
-
   state.poolIndex++;
 
   setTimeout(() => nextQuestion(), correct ? 600 : 1200);
 }
 
 function showFeedback(correct, correctAnswer) {
-  const inp = document.getElementById('answer-input');
-  const fb  = document.getElementById('feedback-msg');
-  const qt  = document.getElementById('question-text');
+  const fb = document.getElementById('feedback-msg');
+  const qt = document.getElementById('question-text');
 
   if (correct) {
     inp.className = 'correct';
@@ -729,7 +798,7 @@ function showFeedback(correct, correctAnswer) {
     qt.classList.add('flash-green');
   } else {
     inp.className = 'wrong';
-    fb.textContent = `✗ Het goede antwoord was: ${formatNum(correctAnswer)}`;
+    fb.textContent = `✗ Antwoord: ${formatNum(correctAnswer)}`;
     fb.className = 'feedback-msg wrong';
     qt.classList.add('flash-red');
   }
@@ -737,20 +806,15 @@ function showFeedback(correct, correctAnswer) {
 
 function updateStreakBadge() {
   const badge = document.getElementById('streak-badge');
-  const count = document.getElementById('streak-count');
-  if (state.streak >= 3) {
-    badge.style.display = 'flex';
-    count.textContent = state.streak;
-  } else {
-    badge.style.display = 'none';
-  }
+  document.getElementById('streak-count').textContent = state.streak;
+  badge.style.display = state.streak >= 3 ? 'flex' : 'none';
 }
 
 function recordHistory(q, given, correct) {
   state.history.push({
     question: `${formatNum(q.tafel)} × ${q.mult}`,
-    given: given === null ? '(tijd op)' : formatNum(given),
-    answer: formatNum(q.answer),
+    given:    given === null ? '(tijd op)' : formatNum(given),
+    answer:   formatNum(q.answer),
     correct,
   });
 }
@@ -782,30 +846,26 @@ function showResults() {
   const total = good + wrong;
   const pct   = total > 0 ? Math.round((good / total) * 100) : 0;
 
-  // Stars
   let stars = '⭐';
   if (pct >= 50) stars = '⭐⭐';
   if (pct >= 80) stars = '⭐⭐⭐';
+
   document.getElementById('result-stars').textContent = stars;
   document.getElementById('result-score').textContent = score;
   document.getElementById('result-sub').textContent =
-    mode === 'race'
-      ? `punten in ${state.cfg.raceTime}s`
-      : `punten — ${total} vragen`;
+    mode === 'race' ? `punten in ${state.cfg.raceTime}s` : `punten — ${total} vragen`;
 
   document.getElementById('stat-good').textContent  = good;
   document.getElementById('stat-wrong').textContent = wrong;
   document.getElementById('stat-pct').textContent   = pct + '%';
 
-  // Highscore
   const hsKey = `${mode}-${level}`;
   const prev  = highscores[hsKey] || 0;
   if (score > prev) highscores[hsKey] = score;
-  const best = highscores[hsKey];
+  const best  = highscores[hsKey];
   document.getElementById('hs-val').textContent =
-    `${best} ${score > prev && prev > 0 ? '🎉 Nieuw record!' : ''}`;
+    `${best}${score > prev && prev > 0 ? ' 🎉 Nieuw record!' : ''}`;
 
-  // Detail table
   const tbody = document.getElementById('detail-body');
   tbody.innerHTML = '';
   history.forEach(h => {
@@ -825,8 +885,8 @@ function showResults() {
 }
 
 function toggleDetail() {
-  const wrap  = document.getElementById('detail-wrap');
-  const arrow = document.getElementById('detail-arrow');
+  const wrap   = document.getElementById('detail-wrap');
+  const arrow  = document.getElementById('detail-arrow');
   const hidden = wrap.classList.toggle('hidden');
   arrow.textContent = hidden ? '▶' : '▼';
 }
